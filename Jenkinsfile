@@ -1,44 +1,37 @@
-@Library("Shared") _
 pipeline{
-    
-    agent { label "vinod"}
+    agent { label "rahul"}
     
     stages{
         
-        stage("Hello"){
-            steps{
-                script{
-                    hello()
+        stage("code") {
+            steps {
+                echo "code cloning suucess"
+                git url: "https://github.com/rahulkr1012/django-notes-app.git", branch:"master"
+            }
+        }    
+        stage(" build") {
+            steps {
+                echo "this will build the code"
+                sh "docker build -t notes-app:latest ."
+            }
+        }
+        stage("push") {
+            steps {
+                withCredentials([usernamePassword(credentialsId:"ef8e74a3-8165-4f0e-9ab4-53c0b46576b9",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
+                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                sh "docker image tag notes-app:latest ${env.dockerHubUser}/notes-app:latest"
+                sh "docker push ${env.dockerHubUser}/notes-app:latest"
+                echo "code pushed to docker hub"
+                 
+                    
                 }
             }
-        }
-        stage("Code"){
-            steps{
-               script{
-                clone("https://github.com/LondheShubham153/django-notes-app.git","main")
-               }
-                
-            }
-        }
-        stage("Build"){
-            steps{
-                script{
-                docker_build("notes-app","latest","trainwithshubham")
-                }
-            }
-        }
-        stage("Push to DockerHub"){
-            steps{
-                script{
-                    docker_push("notes-app","latest","trainwithshubham")
-                }
-            }
-        }
-        stage("Deploy"){
-            steps{
-                echo "This is deploying the code"
-                sh "docker compose down && docker compose up -d"
-            }
-        }
+        }    
+        stage("deploy") {
+            steps {
+                echo "deploy the code"
+                sh "docker-compose up -d"
+            } 
+        }    
     }
 }
