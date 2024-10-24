@@ -22,9 +22,7 @@ spec:
           # If environment variables are required, they can be set here.
           # env:
           #   - name: DJANGO_ENV
-          #     value: "production"
-          #   - name: DJANGO_SECRET_KEY
-          #     value: "your-secret-key"
+     
 ---
 apiVersion: v1
 kind: Service
