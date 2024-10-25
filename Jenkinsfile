@@ -8,14 +8,10 @@ agent any
             }
         }
     }
-
-
     stage("code") {
         steps {
             script{
              clone ("<https://github.com/rahulkr1012/django-notes-app.git>", "master")
-
-
             }
         }
     }
