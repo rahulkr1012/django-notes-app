@@ -1,38 +1,45 @@
-@Library("shared") _
-pipeline {
-    agent any
-
-    stages {
-        stage("Code") {
-            steps {
-                echo "Code cloning success"
-                git url: "https://github.com/rahulkr1012/django-notes-app.git", branch: "master"
-            }
-        }
-
-        stage("Build") {
-            steps {
-                echo "This will build the code"
-                sh "docker build -t notes-app:latest ."
-            }
-        }
-
-        stage("Push") {
-            steps {
-                withCredentials([usernamePassword(credentialsId: "ef8e74a3-8165-4f0e-9ab4-53c0b46576b9", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]) {
-                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                    sh "docker image tag notes-app:latest ${env.dockerHubUser}/notes-app:latest"
-                    sh "docker push ${env.dockerHubUser}/notes-app:latest"
-                    echo "Code pushed to Docker Hub"
-                }
-            }
-        }
-
-        stage("Deploy") {
-            steps {
-                echo "Deploy the code"
-                sh "docker-compose up -d"
+@Library ("shared") _
+pipeline{
+agent any
+    stages{
+    stage("Hello") {
+        steps {
+            script { hello ()
             }
         }
     }
+
+
+    stage("code") {
+        steps {
+            script{
+             clone ("<https://github.com/rahulkr1012/django-notes-app.git>", "master")
+
+
+            }
+        }
+    }
+    stage(" build") {
+        steps {
+            echo "this will build the code"
+            script{
+                docker_build("django-notes-app", "latest" , "rahulkr1796")
+            }
+        }
+    }
+    stage("push") {
+        steps {
+            script{
+                docker_push("django-notes-app" ,"latest" , "rahulkr1796")
+            }
+            echo "code pushed to docker hub"
+        }
+    }
+    stage("deploy") {
+        steps {
+            echo "deploy the code"
+            sh "docker-compose up -d"
+        }
+    }
 }
+
