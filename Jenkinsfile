@@ -37,6 +37,6 @@ agent any
             sh "docker-compose up -d"
         }
     }
-}
+ }
 }
 
