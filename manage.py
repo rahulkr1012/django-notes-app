@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""Django's command-line utility for administrative tasks.hook1"""
+"""Django's command-line utility for administrative t
+asks.hook1"""
 import os
 import sys
 
